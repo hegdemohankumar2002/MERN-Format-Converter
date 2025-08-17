@@ -1,0 +1,247 @@
+import React, { useState, useRef, useEffect } from "react";
+import axios from "axios";
+import { toast } from "react-toastify";
+import "../../App.css";
+import { useAuth } from "../../context/AuthContext";
+
+const SVGToJPG = () => {
+  const [files, setFiles] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [downloadLink, setDownloadLink] = useState("");
+  const [dragActive, setDragActive] = useState(false);
+  const inputRef = useRef();
+  const [quota, setQuota] = useState(null);
+  const backendBaseUrl = process.env.REACT_APP_BACKEND_URL || `${window.location.protocol}//${window.location.hostname}:5000`;
+  const { token } = useAuth();
+
+  // Only allow SVG files, and append to current selection (no duplicates)
+  const handleFiles = (fileList) => {
+    const newFiles = Array.from(fileList).filter(f => /\.svg$/i.test(f.name));
+    setFiles(prevFiles => {
+      // Avoid duplicates by name and size
+      const existing = new Set(prevFiles.map(f => f.name + f.size));
+      const filtered = newFiles.filter(f => !existing.has(f.name + f.size));
+      return [...prevFiles, ...filtered];
+    });
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setDragActive(false);
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      handleFiles(e.dataTransfer.files);
+    }
+  };
+
+  const handleDrag = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.type === "dragenter" || e.type === "dragleover") setDragActive(true);
+    else if (e.type === "dragleave") setDragActive(false);
+  };
+
+  const fetchQuota = async () => {
+    try {
+      const res = await axios.get(`${backendBaseUrl}/api/quota`, {
+        headers: {
+          ...(token ? { Authorization: `Bearer ${token}` } : {})
+        }
+      });
+      setQuota(res.data);
+    } catch (err) {
+      setQuota(null);
+    }
+  };
+
+  useEffect(() => {
+    fetchQuota();
+    // eslint-disable-next-line
+  }, []);
+
+  const handleRemoveFile = (index) => {
+    setFiles(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const handleClearFiles = () => {
+    setFiles([]);
+  };
+
+  const handleUpload = async () => {
+    if (!files.length) {
+      toast.warn("❌ Please select at least one SVG file to convert.");
+      return;
+    }
+    if (quota && quota.type === "guest" && quota.remaining <= 0) {
+      toast.error("You have reached your free conversion limit. Please register or log in for unlimited conversions.");
+      return;
+    }
+    const formData = new FormData();
+    for (let f of files) {
+      formData.append("images", f);
+    }
+    setLoading(true);
+    setDownloadLink("");
+    try {
+      const res = await axios.post(
+        `${backendBaseUrl}/api/convert`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            ...(token ? { Authorization: `Bearer ${token}` } : {})
+          }
+        }
+      );
+      setDownloadLink(res.data.downloadUrl);
+      toast.success("Conversion successful!");
+      fetchQuota();
+    } catch (err) {
+      if (err.response && err.response.status === 403) {
+        await fetchQuota();
+        toast.error("You have reached your free conversion limit. Please register or log in for unlimited conversions.");
+      } else {
+        await fetchQuota();
+        toast.error("Conversion failed!");
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="neon-card" style={{ maxWidth: 420, margin: "2.5rem auto", position: "relative" }}>
+      <div style={{ textAlign: "center", marginBottom: 18 }}>
+        <span className="text-neon" style={{ fontSize: 44, display: "block", marginBottom: 8, textShadow: 'none' }}>🖌️</span>
+        <h2 className="text-neon" style={{ marginBottom: 6, textShadow: 'none' }}>SVG to JPG</h2>
+        <p style={{ color: "#b3b3ff", marginBottom: 18 }}>Transform SVG vector images into JPG files.</p>
+      </div>
+      {/* Quota info banner */}
+      {quota && quota.type === "guest" && (
+        <div style={{
+          background: "#ffe06622",
+          color: "#b37d00",
+          borderRadius: 8,
+          padding: "0.7rem 1rem",
+          marginBottom: 16,
+          fontWeight: 500,
+          fontSize: 15,
+          textAlign: "center"
+        }}>
+          {quota.remaining > 0 ? (
+            <>You have <b>{quota.remaining}</b> free conversions left. Register or log in for unlimited conversions.</>
+          ) : (
+            <><b>You have reached your free conversion limit.</b> Please register or log in for unlimited conversions.</>
+          )}
+        </div>
+      )}
+      <div
+        className={"neon-card" + (dragActive ? " glow" : "")}
+        style={{
+          background: dragActive ? "#23234d" : "#23234dbb",
+          border: dragActive ? "1.5px solid var(--color-accent)" : "1px solid var(--color-primary)",
+          minHeight: 120,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          marginBottom: 18,
+          transition: "border 0.2s, background 0.2s",
+          boxShadow: dragActive ? "0 0 12px 2px #00eaff55" : "0 0 8px 1px #7f5cff33",
+          cursor: "pointer"
+        }}
+        onDragEnter={handleDrag}
+        onDragOver={handleDrag}
+        onDragLeave={handleDrag}
+        onDrop={handleDrop}
+        onClick={() => inputRef.current && inputRef.current.click()}
+        tabIndex={0}
+        onKeyDown={e => {
+          if (e.key === "Enter" || e.key === " ") {
+            inputRef.current && inputRef.current.click();
+          }
+        }}
+        aria-label="File upload area. Click or drag SVG files here."
+      >
+        <input
+          ref={inputRef}
+          type="file"
+          multiple
+          accept=".svg"
+          style={{ display: "none" }}
+          onChange={e => handleFiles(e.target.files)}
+        />
+        <span style={{ fontSize: 32, color: "var(--color-accent)", marginBottom: 8 }}>📂</span>
+        <span style={{ color: dragActive ? "var(--color-accent)" : "#b3b3ff" }}>
+          {dragActive ? "Drop files here!" : "Drag & drop SVG files or click to select"}
+        </span>
+      </div>
+      {files.length > 0 && (
+        <div style={{ marginBottom: 18 }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <strong style={{ color: "var(--color-accent)" }}>Selected files:</strong>
+            <button
+              type="button"
+              className="neon-btn"
+              style={{
+                padding: "2px 10px",
+                fontSize: 13,
+                background: "none",
+                color: "#b3b3ff",
+                border: "1px solid var(--color-accent)",
+                borderRadius: 5,
+                marginLeft: 10,
+                cursor: "pointer"
+              }}
+              onClick={handleClearFiles}
+              aria-label="Clear all selected files"
+            >
+              Clear All
+            </button>
+          </div>
+          <ul style={{ color: "#b3b3ff", fontSize: 15, margin: "8px 0 0 0", paddingLeft: 18 }}>
+            {files.map((f, i) => (
+              <li key={i} style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                <span>{f.name}</span>
+                <button
+                  type="button"
+                  className="neon-btn"
+                  style={{
+                    padding: "0 7px",
+                    fontSize: 13,
+                    background: "none",
+                    color: "#ff6b6b",
+                    border: "none",
+                    borderRadius: 3,
+                    marginLeft: 8,
+                    cursor: "pointer"
+                  }}
+                  onClick={() => handleRemoveFile(i)}
+                  aria-label={`Remove ${f.name}`}
+                  title={`Remove ${f.name}`}
+                >
+                  ✕
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+      <button className="neon-btn" onClick={handleUpload} disabled={loading} style={{ width: "100%", marginBottom: 18 }}>
+        {loading ? <span className="neon-loader" style={{ display: "inline-block", verticalAlign: "middle" }} /> : "Convert"}
+      </button>
+      {downloadLink && (
+        <a
+          href={`${backendBaseUrl}${downloadLink}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="neon-btn"
+          style={{ display: "block", textAlign: "center", margin: "0 auto", background: "linear-gradient(90deg, var(--color-accent), var(--color-primary))" }}
+        >
+          ⬇ Download Converted Files
+        </a>
+      )}
+    </div>
+  );
+};
+
+export default SVGToJPG;

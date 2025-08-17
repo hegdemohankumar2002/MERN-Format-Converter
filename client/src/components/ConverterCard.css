@@ -1,0 +1,125 @@
+/* Neon Converter Card - Compact Version */
+.converter-card {
+  background: var(--color-card);
+  border-radius: 0.8rem;
+  padding: 1.2rem 1rem 1rem 1rem;
+  width: 100%;
+  height: 100%;
+  min-height: 140px;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: 0 0 16px 1px #7f5cff22, 0 0 0 1px var(--color-anime-pink);
+  border: 1px solid var(--color-anime-pink);
+  margin: 0;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
+}
+
+.converter-card:hover {
+  box-shadow: 0 0 24px 4px var(--color-anime-blue), 0 0 0 1.5px var(--color-anime-purple);
+  border: 1.5px solid var(--color-anime-blue);
+  transform: translateY(-4px) scale(1.01);
+  background: linear-gradient(120deg, var(--color-card) 80%, rgba(127, 92, 255, 0.1) 100%);
+}
+
+.converter-card:focus {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.converter-card .icon {
+  font-size: 32px;
+  margin-bottom: 8px;
+  color: var(--color-anime-purple);
+  text-shadow: 0 0 6px var(--color-anime-pink), 0 0 12px var(--color-anime-blue);
+  transition: transform 0.3s ease;
+}
+
+.converter-card:hover .icon {
+  transform: scale(1.05);
+}
+
+.converter-card h3 {
+  color: var(--color-text);
+  font-weight: 600;
+  font-size: 1rem;
+  margin-bottom: 6px;
+  line-height: 1.2;
+}
+
+.converter-card p {
+  color: var(--color-anime-purple);
+  font-size: 13px;
+  line-height: 1.3;
+  margin: 0;
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Card overlay for better hover effect */
+.card-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, transparent 0%, rgba(127, 92, 255, 0.05) 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.converter-card:hover .card-overlay {
+  opacity: 1;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .converter-card {
+    padding: 1rem 0.8rem 0.8rem 0.8rem;
+    min-height: 120px;
+  }
+  
+  .converter-card .icon {
+    font-size: 28px;
+    margin-bottom: 6px;
+  }
+  
+  .converter-card h3 {
+    font-size: 0.9rem;
+    margin-bottom: 4px;
+  }
+  
+  .converter-card p {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .converter-card {
+    padding: 0.8rem 0.6rem 0.6rem 0.6rem;
+    min-height: 100px;
+  }
+  
+  .converter-card .icon {
+    font-size: 24px;
+    margin-bottom: 4px;
+  }
+  
+  .converter-card h3 {
+    font-size: 0.85rem;
+    margin-bottom: 3px;
+  }
+  
+  .converter-card p {
+    font-size: 11px;
+  }
+}

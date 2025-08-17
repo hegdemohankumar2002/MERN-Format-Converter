@@ -1,0 +1,60 @@
+.tool-card {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 12px 0 rgba(34, 34, 59, 0.08);
+  padding: 2rem 1.5rem 1.5rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  transition: box-shadow 0.18s, transform 0.18s;
+  cursor: pointer;
+  border: 1.5px solid #e0e3e7;
+  position: relative;
+  min-height: 140px;
+}
+
+.tool-card:hover,
+.tool-card:focus {
+  box-shadow: 0 4px 20px 0 rgba(25, 118, 210, 0.13);
+  border-color: #1976d2;
+  transform: translateY(-2px) scale(1.012);
+}
+
+.tool-card-title {
+  font-size: 1.18rem;
+  font-weight: 600;
+  color: #22223b;
+  margin-bottom: 0.7rem;
+  letter-spacing: 0.01em;
+}
+
+.tool-card-link {
+  margin-top: auto;
+  color: #1976d2;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 1rem;
+  transition: color 0.18s;
+  border-radius: 4px;
+  padding: 0.2rem 0.5rem;
+  background: transparent;
+  display: inline-block;
+}
+
+.tool-card-link:hover,
+.tool-card-link:focus {
+  color: #1256a3;
+  background: #f0f7ff;
+  text-decoration: underline;
+}
+
+@media (max-width: 600px) {
+  .tool-card {
+    padding: 1.1rem 0.7rem 1rem 0.7rem;
+    min-height: 100px;
+  }
+  .tool-card-title {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+  }
+}
