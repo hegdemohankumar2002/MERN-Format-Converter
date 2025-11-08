@@ -17,13 +17,13 @@ RUN apt-get update \
 WORKDIR /app
 
 # Copy only package manifests first to leverage Docker layer caching
-COPY server/package*.json ./
+COPY package*.json ./
 
 # Install Node dependencies
 RUN npm ci --omit=dev || npm install --omit=dev
 
 # Copy the rest of the server source
-COPY server/. .
+COPY . .
 
 # Install Python dependencies for the converter
 RUN pip install --no-cache-dir -r converter/requirements.txt
