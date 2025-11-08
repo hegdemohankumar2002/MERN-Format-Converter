@@ -44,13 +44,15 @@ router.options("/", (req, res) => {
   res.status(200).end();
 });
 
-router.post("/", upload.array("images"), async (req, res) => {
+router.post("/", upload.fields([
+  { name: 'images', maxCount: 10 },
+  { name: 'files', maxCount: 10 }
+]), async (req, res) => {
   const ip = getClientIP(req);
   const timestamp = Date.now();
   const userId = req.userId || null;
 
   console.log(`[INFO] File upload request received`);
-  console.log(`[INFO] Files count: ${req.files ? req.files.length : 0}`);
   console.log(`[INFO] User ID: ${userId}`);
   console.log(`[INFO] IP: ${ip}`);
 
@@ -66,9 +68,22 @@ router.post("/", upload.array("images"), async (req, res) => {
   console.log(`   Input: ${inputDir}`);
   console.log(`   Output: ${outputDirLocal}`);
 
+  // Combine files from both 'images' and 'files' fields
+  const allFiles = [];
+  if (req.files) {
+    if (req.files.images) {
+      allFiles.push(...req.files.images);
+    }
+    if (req.files.files) {
+      allFiles.push(...req.files.files);
+    }
+  }
+
+  console.log(`[INFO] Files count: ${allFiles.length}`);
+
   // Move uploaded files to inputDir
-  if (req.files && req.files.length > 0) {
-    for (const file of req.files) {
+  if (allFiles.length > 0) {
+    for (const file of allFiles) {
       console.log(`📄 Processing file: ${file.originalname} (${file.mimetype})`);
       const destPath = path.join(inputDir, path.basename(file.path));
       fs.renameSync(file.path, destPath);

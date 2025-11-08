@@ -8,15 +8,14 @@ import sys
 import yt_dlp
 import io
 
-def download_youtube_video(url, output_dir, quality="best"):
+def download_youtube_video(url, output_dir):
     """
     Download YouTube video using yt-dlp Python package
-    
+
     Args:
         url (str): YouTube video URL
         output_dir (str): Directory to save the downloaded video
-        quality (str): Video quality preference
-    
+
     Returns:
         bool: True if successful, False otherwise
     """
@@ -28,20 +27,19 @@ def download_youtube_video(url, output_dir, quality="best"):
         print("YouTube Downloader")
         print("URL: {}".format(url))
         print("Output directory: {}".format(output_dir))
-        print("Quality preference: {}".format(quality))
-        
+
         # Ensure output directory exists
         if not os.path.exists(output_dir):
             os.makedirs(output_dir, exist_ok=True)
             print("Created output directory: {}".format(output_dir))
-        
-        # Configure yt-dlp options
+
+        # Configure yt-dlp options to download audio in MP3 format
         ydl_opts = {
             'outtmpl': os.path.join(output_dir, '%(title)s.%(ext)s'),
-            'format': '{}+bestaudio/best'.format(quality),
-            'merge_output_format': 'mp4',
+            'format': 'bestaudio/best',
+            'extractaudio': True,
             'audio_format': 'mp3',
-            'audio_quality': '0',
+            'audio_quality': '192K',
             'quiet': False,
             'no_warnings': False,
             'progress_hooks': [lambda d: print("Download progress: {}".format(d.get('_percent_str', 'N/A'))) if d['status'] == 'downloading' else None]

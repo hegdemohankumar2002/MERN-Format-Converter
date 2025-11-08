@@ -12,6 +12,11 @@ const contactRoutes = require("./routes/contact");
 const path = require("path");
 
 dotenv.config();
+// Read allowed origins from environment (comma-separated)
+const allowedOrigins = (process.env.ALLOWED_ORIGINS || "")
+  .split(",")
+  .map((s) => s.trim())
+  .filter(Boolean);
 
 // Set default environment variables if not provided
 if (!process.env.JWT_SECRET) {
@@ -26,15 +31,22 @@ app.use(cors({
   origin: function (origin, callback) {
     // Allow requests with no origin (like mobile apps or curl requests)
     if (!origin) return callback(null, true);
-    
-    // Allow localhost and local network IPs
-    if (origin.startsWith('http://localhost:') || 
-        origin.startsWith('http://192.168.') ||
-        origin.startsWith('http://10.') ||
-        origin.startsWith('http://172.')) {
+
+    // Allow explicit allowlist from env
+    if (allowedOrigins.includes(origin)) {
       return callback(null, true);
     }
-    
+
+    // Allow localhost and local network IPs
+    if (
+      origin.startsWith('http://localhost:') ||
+      origin.startsWith('http://192.168.') ||
+      origin.startsWith('http://10.') ||
+      origin.startsWith('http://172.')
+    ) {
+      return callback(null, true);
+    }
+
     callback(new Error('Not allowed by CORS'));
   },
   credentials: true,

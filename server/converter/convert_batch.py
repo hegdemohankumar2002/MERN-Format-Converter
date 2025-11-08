@@ -64,11 +64,14 @@ def convert_file(input_path, output_path, out_ext=None):
             print(f"[SUCCESS] PNG to JPG conversion successful")
         elif ext == ".mp4" and out_ext == ".mp3":
             # Use ffmpeg to extract audio
+            print(f"[INFO] Running ffmpeg command: ffmpeg -y -i {input_path} -vn -acodec libmp3lame {output_path}")
             result = subprocess.run([
-                "ffmpeg", "-y", "-i", input_path, "-vn", "-acodec", "libmp3lame", output_path
+                "ffmpeg", "-y", "-i", input_path, "-vn", "-acodec", "libmp3lame", "-q:a", "2", output_path
             ], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             if result.returncode != 0:
-                print(f"[ERROR] ffmpeg error: {result.stderr.decode()}")
+                print(f"[ERROR] ffmpeg failed with return code: {result.returncode}")
+                print(f"[ERROR] ffmpeg stdout: {result.stdout.decode()}")
+                print(f"[ERROR] ffmpeg stderr: {result.stderr.decode()}")
                 return False
             print(f"[SUCCESS] MP4 to MP3 conversion successful")
             return True
