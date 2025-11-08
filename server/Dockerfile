@@ -26,7 +26,7 @@ RUN npm ci --omit=dev || npm install --omit=dev
 COPY . .
 
 # Install Python dependencies for the converter
-RUN pip install --no-cache-dir -r converter/requirements.txt
+RUN pip install --no-cache-dir --break-system-packages -r converter/requirements.txt
 
 # Environment
 ENV NODE_ENV=production
