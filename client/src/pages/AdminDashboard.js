@@ -19,6 +19,7 @@ const AdminDashboard = ({ theme }) => {
   useEffect(() => {
     fetchContacts();
     fetchStats();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPage, filter]);
 
   const fetchContacts = async () => {
@@ -184,11 +185,11 @@ const AdminDashboard = ({ theme }) => {
   return (
     <div className={`admin-dashboard theme-${theme}`} style={{ minHeight: '100vh', background: 'var(--color-bg)' }}>
       <Header />
-      
+
       <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '2rem' }}>
-        <h1 style={{ 
-          fontSize: '2.5rem', 
-          fontWeight: 700, 
+        <h1 style={{
+          fontSize: '2.5rem',
+          fontWeight: 700,
           color: 'var(--color-text)',
           marginBottom: '2rem',
           textAlign: 'center'
@@ -197,9 +198,9 @@ const AdminDashboard = ({ theme }) => {
         </h1>
 
         {/* Stats */}
-        <div style={{ 
-          display: 'grid', 
-          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', 
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
           gap: '1rem',
           marginBottom: '2rem'
         }}>
@@ -216,7 +217,7 @@ const AdminDashboard = ({ theme }) => {
               {stats.total || 0}
             </div>
           </div>
-          
+
           <div style={{
             background: 'var(--color-card)',
             border: '2px solid var(--color-primary)',
@@ -230,7 +231,7 @@ const AdminDashboard = ({ theme }) => {
               {stats.today || 0}
             </div>
           </div>
-          
+
           <div style={{
             background: 'var(--color-card)',
             border: '2px solid var(--color-primary)',
@@ -248,8 +249,8 @@ const AdminDashboard = ({ theme }) => {
 
         {/* Filter */}
         <div style={{ marginBottom: '2rem' }}>
-          <select 
-            value={filter} 
+          <select
+            value={filter}
             onChange={(e) => setFilter(e.target.value)}
             style={{
               padding: '0.5rem 1rem',
@@ -325,8 +326,8 @@ const AdminDashboard = ({ theme }) => {
                 </div>
               </div>
               <h4 style={{ marginBottom: '0.5rem', color: 'var(--color-text)' }}>{contact.subject}</h4>
-              <p style={{ 
-                color: 'var(--color-text-muted)', 
+              <p style={{
+                color: 'var(--color-text-muted)',
                 lineHeight: 1.6,
                 display: '-webkit-box',
                 WebkitLineClamp: 2,
@@ -469,56 +470,56 @@ const AdminDashboard = ({ theme }) => {
                 </p>
               </div>
 
-                             {selectedContact.ipAddress && (
-                 <div style={{ marginBottom: '1rem' }}>
-                   <strong style={{ color: 'var(--color-text)' }}>IP Address:</strong>
-                   <p style={{ color: 'var(--color-text-muted)', marginTop: '0.25rem' }}>{selectedContact.ipAddress}</p>
-                 </div>
-               )}
+              {selectedContact.ipAddress && (
+                <div style={{ marginBottom: '1rem' }}>
+                  <strong style={{ color: 'var(--color-text)' }}>IP Address:</strong>
+                  <p style={{ color: 'var(--color-text-muted)', marginTop: '0.25rem' }}>{selectedContact.ipAddress}</p>
+                </div>
+              )}
 
-               {/* Reply Section */}
-               <div style={{ marginTop: '2rem', paddingTop: '1rem', borderTop: '1px solid var(--color-border)' }}>
-                 <h3 style={{ color: 'var(--color-text)', marginBottom: '1rem' }}>Send Reply</h3>
-                 <textarea
-                   value={replyMessage}
-                   onChange={(e) => setReplyMessage(e.target.value)}
-                   placeholder="Type your reply message here..."
-                   rows="4"
-                   style={{
-                     width: '100%',
-                     padding: '0.8rem',
-                     borderRadius: '8px',
-                     border: '1px solid var(--color-border)',
-                     background: 'var(--color-bg)',
-                     color: 'var(--color-text)',
-                     fontSize: '1rem',
-                     resize: 'vertical',
-                     marginBottom: '1rem'
-                   }}
-                 />
-                 <button
-                   onClick={() => sendReply(selectedContact._id)}
-                   disabled={isReplying || !replyMessage.trim()}
-                   style={{
-                     padding: '0.8rem 1.5rem',
-                     borderRadius: '8px',
-                     border: 'none',
-                     background: 'var(--color-primary)',
-                     color: 'var(--color-btn-text)',
-                     cursor: isReplying || !replyMessage.trim() ? 'not-allowed' : 'pointer',
-                     opacity: isReplying || !replyMessage.trim() ? 0.7 : 1,
-                     fontSize: '1rem',
-                     fontWeight: '600'
-                   }}
-                 >
-                   {isReplying ? 'Sending...' : 'Send Reply'}
-                 </button>
-               </div>
+              {/* Reply Section */}
+              <div style={{ marginTop: '2rem', paddingTop: '1rem', borderTop: '1px solid var(--color-border)' }}>
+                <h3 style={{ color: 'var(--color-text)', marginBottom: '1rem' }}>Send Reply</h3>
+                <textarea
+                  value={replyMessage}
+                  onChange={(e) => setReplyMessage(e.target.value)}
+                  placeholder="Type your reply message here..."
+                  rows="4"
+                  style={{
+                    width: '100%',
+                    padding: '0.8rem',
+                    borderRadius: '8px',
+                    border: '1px solid var(--color-border)',
+                    background: 'var(--color-bg)',
+                    color: 'var(--color-text)',
+                    fontSize: '1rem',
+                    resize: 'vertical',
+                    marginBottom: '1rem'
+                  }}
+                />
+                <button
+                  onClick={() => sendReply(selectedContact._id)}
+                  disabled={isReplying || !replyMessage.trim()}
+                  style={{
+                    padding: '0.8rem 1.5rem',
+                    borderRadius: '8px',
+                    border: 'none',
+                    background: 'var(--color-primary)',
+                    color: 'var(--color-btn-text)',
+                    cursor: isReplying || !replyMessage.trim() ? 'not-allowed' : 'pointer',
+                    opacity: isReplying || !replyMessage.trim() ? 0.7 : 1,
+                    fontSize: '1rem',
+                    fontWeight: '600'
+                  }}
+                >
+                  {isReplying ? 'Sending...' : 'Send Reply'}
+                </button>
+              </div>
             </div>
           </div>
         )}
       </div>
-      
+
       <Footer />
     </div>
   );

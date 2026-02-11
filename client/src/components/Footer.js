@@ -51,27 +51,39 @@ const Footer = () => {
               display: 'flex',
               gap: '1rem'
             }}>
-              <a href="mailto:your-support-email@example.com" style={{
+              <button style={{
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                padding: 0,
                 color: 'var(--color-text-muted)',
                 fontSize: '1.5rem',
                 transition: 'color 0.3s ease'
               }} onMouseEnter={(e) => e.target.style.color = 'var(--color-accent)'} onMouseLeave={(e) => e.target.style.color = 'var(--color-text-muted)'}>
                 📧
-              </a>
-              <a href="#" style={{
+              </button>
+              <button style={{
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                padding: 0,
                 color: 'var(--color-text-muted)',
                 fontSize: '1.5rem',
                 transition: 'color 0.3s ease'
               }} onMouseEnter={(e) => e.target.style.color = 'var(--color-accent)'} onMouseLeave={(e) => e.target.style.color = 'var(--color-text-muted)'}>
                 🐦
-              </a>
-              <a href="#" style={{
+              </button>
+              <button style={{
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                padding: 0,
                 color: 'var(--color-text-muted)',
                 fontSize: '1.5rem',
                 transition: 'color 0.3s ease'
               }} onMouseEnter={(e) => e.target.style.color = 'var(--color-accent)'} onMouseLeave={(e) => e.target.style.color = 'var(--color-text-muted)'}>
                 📘
-              </a>
+              </button>
             </div>
           </div>
 
