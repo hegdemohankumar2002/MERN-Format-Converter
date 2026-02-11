@@ -12,6 +12,7 @@ const Contact = ({ theme }) => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState(null);
+  const backendBaseUrl = process.env.REACT_APP_BACKEND_URL || window.location.origin;
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -26,7 +27,7 @@ const Contact = ({ theme }) => {
     setIsSubmitting(true);
     
     try {
-      const response = await fetch('http://localhost:5000/api/contact/submit', {
+      const response = await fetch(`${backendBaseUrl}/api/contact/submit`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

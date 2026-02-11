@@ -14,6 +14,7 @@ const AdminDashboard = ({ theme }) => {
   const [replyMessage, setReplyMessage] = useState('');
   const [isReplying, setIsReplying] = useState(false);
   const navigate = useNavigate();
+  const backendBaseUrl = process.env.REACT_APP_BACKEND_URL || `${window.location.protocol}//${window.location.hostname}:5000`;
 
   useEffect(() => {
     fetchContacts();
@@ -29,7 +30,7 @@ const AdminDashboard = ({ theme }) => {
       }
 
       const statusParam = filter !== 'all' ? `&status=${filter}` : '';
-      const response = await fetch(`http://localhost:5000/api/contact/admin?page=${currentPage}&limit=10${statusParam}`, {
+      const response = await fetch(`${backendBaseUrl}/api/contact/admin?page=${currentPage}&limit=10${statusParam}`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -56,7 +57,7 @@ const AdminDashboard = ({ theme }) => {
   const fetchStats = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:5000/api/contact/admin/stats', {
+      const response = await fetch(`${backendBaseUrl}/api/contact/admin/stats`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -74,7 +75,7 @@ const AdminDashboard = ({ theme }) => {
   const updateStatus = async (contactId, newStatus) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:5000/api/contact/admin/${contactId}/status`, {
+      const response = await fetch(`${backendBaseUrl}/api/contact/admin/${contactId}/status`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -100,7 +101,7 @@ const AdminDashboard = ({ theme }) => {
 
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:5000/api/contact/admin/${contactId}`, {
+      const response = await fetch(`${backendBaseUrl}/api/contact/admin/${contactId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -126,7 +127,7 @@ const AdminDashboard = ({ theme }) => {
     setIsReplying(true);
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:5000/api/contact/admin/${contactId}/reply`, {
+      const response = await fetch(`${backendBaseUrl}/api/contact/admin/${contactId}/reply`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -11,6 +11,7 @@ const AdminLogin = ({ theme }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const backendBaseUrl = process.env.REACT_APP_BACKEND_URL || window.location.origin;
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -26,7 +27,7 @@ const AdminLogin = ({ theme }) => {
     setError('');
 
     try {
-      const response = await fetch('http://localhost:5000/api/auth/login', {
+      const response = await fetch(`${backendBaseUrl}/api/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

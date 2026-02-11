@@ -8,6 +8,7 @@ const ContactStatus = ({ theme }) => {
   const [contactData, setContactData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const backendBaseUrl = process.env.REACT_APP_BACKEND_URL || window.location.origin;
 
   const checkStatus = async (e) => {
     e.preventDefault();
@@ -21,7 +22,7 @@ const ContactStatus = ({ theme }) => {
     setContactData(null);
 
     try {
-      const response = await fetch(`http://localhost:5000/api/contact/check-status?email=${encodeURIComponent(email)}`);
+      const response = await fetch(`${backendBaseUrl}/api/contact/check-status?email=${encodeURIComponent(email)}`);
       const data = await response.json();
 
              if (data.success) {

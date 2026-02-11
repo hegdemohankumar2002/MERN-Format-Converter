@@ -1,9 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import "../../App.css";
 import { useAuth } from "../../context/AuthContext";
-import { useEffect } from "react";
 
 const YouTubeDownloader = () => {
   const [url, setUrl] = useState("");
@@ -28,21 +27,22 @@ const YouTubeDownloader = () => {
     { value: "bestvideo[height<=2160]+bestaudio/best[height<=2160]", label: "2160p (4K)" },
   ];
 
-  useEffect(() => {
-    const fetchQuota = async () => {
-      try {
-        console.log("Token in YouTubeDownloader:", token);
-        const headers = token ? { Authorization: `Bearer ${token}` } : {};
-        console.log("Headers being sent:", headers);
-        const res = await axios.get(`${backendBaseUrl}/api/quota`, { headers });
-        setQuota(res.data);
-      } catch (err) {
-        console.error("Quota fetch error:", err);
-        setQuota(null);
-      }
-    };
-    fetchQuota();
+  const fetchQuota = useCallback(async () => {
+    try {
+      console.log("Token in YouTubeDownloader:", token);
+      const headers = token ? { Authorization: `Bearer ${token}` } : {};
+      console.log("Headers being sent:", headers);
+      const res = await axios.get(`${backendBaseUrl}/api/quota`, { headers });
+      setQuota(res.data);
+    } catch (err) {
+      console.error("Quota fetch error:", err);
+      setQuota(null);
+    }
   }, [backendBaseUrl, token]);
+
+  useEffect(() => {
+    fetchQuota();
+  }, [fetchQuota]);
 
   const handleDownload = async () => {
     if (!url.trim()) {

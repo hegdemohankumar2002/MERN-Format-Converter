@@ -16,6 +16,7 @@ function Login({ theme }) {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const backendBaseUrl = process.env.REACT_APP_BACKEND_URL || `${window.location.protocol}//${window.location.hostname}:5000`;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -34,7 +35,7 @@ function Login({ theme }) {
     }
     setLoading(true);
     try {
-      const res = await axios.post(`${window.location.protocol}//${window.location.hostname}:5000/api/auth/login`, {
+      const res = await axios.post(`${backendBaseUrl}/api/auth/login`, {
         email,
         password,
       });

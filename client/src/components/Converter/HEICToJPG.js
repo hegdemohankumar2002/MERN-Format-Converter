@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import "../../App.css";
@@ -20,7 +20,7 @@ const HEICToJPG = () => {
   const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
   const MAX_TOTAL_SIZE = 200 * 1024 * 1024; // 200MB
 
-  const fetchQuota = async () => {
+  const fetchQuota = useCallback(async () => {
     try {
       console.log("Token in HEICToJPG:", token);
       const headers = token ? { Authorization: `Bearer ${token}` } : {};
@@ -31,11 +31,11 @@ const HEICToJPG = () => {
       console.error("Quota fetch error:", err);
       setQuota(null);
     }
-  };
+  }, [token, backendBaseUrl]);
 
   useEffect(() => {
     fetchQuota();
-  }, [token]); // Add token dependency to refetch when token changes
+  }, [fetchQuota]); // Add token dependency to refetch when token changes
 
   const formatFileSize = (bytes) => {
     if (bytes === 0) return '0 Bytes';

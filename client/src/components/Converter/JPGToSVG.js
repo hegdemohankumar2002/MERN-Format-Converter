@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import "../../App.css";
@@ -34,7 +34,7 @@ const JPGToSVG = () => {
     else if (e.type === "dragleave") setDragActive(false);
   };
 
-  const fetchQuota = async () => {
+  const fetchQuota = useCallback(async () => {
     try {
       const res = await axios.get(`${backendBaseUrl}/api/quota`, {
         headers: {
@@ -45,11 +45,11 @@ const JPGToSVG = () => {
     } catch (err) {
       setQuota(null);
     }
-  };
+  }, [token, backendBaseUrl]);
 
   useEffect(() => {
     fetchQuota();
-  }, []);
+  }, [fetchQuota]);
 
   const handleUpload = async () => {
     if (!files.length) {

@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import "../../App.css";
@@ -64,7 +64,7 @@ const MP4ToMP3 = () => {
     }
   };
 
-  const fetchQuota = async () => {
+  const fetchQuota = useCallback(async () => {
     try {
       const res = await axios.get(`${backendBaseUrl}/api/quota`, {
         headers: {
@@ -75,11 +75,11 @@ const MP4ToMP3 = () => {
     } catch (err) {
       setQuota(null);
     }
-  };
+  }, [token, backendBaseUrl]);
 
   useEffect(() => {
     fetchQuota();
-  }, [token]);
+  }, [fetchQuota]);
 
   return (
     <div className="neon-card" style={{ maxWidth: 420, margin: "2.5rem auto", position: "relative" }}>

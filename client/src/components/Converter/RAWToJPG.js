@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import "../../App.css";
@@ -14,7 +14,7 @@ const RAWToJPG = () => {
   const backendBaseUrl = process.env.REACT_APP_BACKEND_URL || `${window.location.protocol}//${window.location.hostname}:5000`;
   const { token } = useAuth();
 
-  const fetchQuota = async () => {
+  const fetchQuota = useCallback(async () => {
     try {
       const res = await axios.get(`${backendBaseUrl}/api/quota`, {
         headers: {
@@ -25,7 +25,7 @@ const RAWToJPG = () => {
     } catch (err) {
       setQuota(null);
     }
-  };
+  }, [token, backendBaseUrl]);
 
   useEffect(() => {
     fetchQuota();

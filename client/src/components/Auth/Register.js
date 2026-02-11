@@ -15,6 +15,7 @@ function Register({ theme }) {
   const [loading, setLoading] = useState(false);
   const [passwordStrength, setPasswordStrength] = useState("");
   const [error, setError] = useState("");
+  const backendBaseUrl = process.env.REACT_APP_BACKEND_URL || `${window.location.protocol}//${window.location.hostname}:5000`;
 
   const checkPasswordStrength = (pwd) => {
     if (pwd.length < 6) return "Weak";
@@ -50,7 +51,7 @@ function Register({ theme }) {
     }
     setLoading(true);
     try {
-      await axios.post(`${window.location.protocol}//${window.location.hostname}:5000/api/auth/register`, { name: username, email, password });
+      await axios.post(`${backendBaseUrl}/api/auth/register`, { name: username, email, password });
       toast.success("✅ Registered successfully! You can now log in.");
       setUsername("");
       setEmail("");
