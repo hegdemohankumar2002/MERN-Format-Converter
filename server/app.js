@@ -57,6 +57,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 const authMiddleware = require("./middleware/auth");
 
+// Health check
+app.get('/', (_req, res) => {
+  res.status(200).send('OK');
+});
+
 // Connect MongoDB
 const mongoUri = process.env.MONGO_URI || "mongodb://localhost:27017/mern_converter";
 mongoose
@@ -80,6 +85,18 @@ app.use("/downloads", express.static(path.join(__dirname, "downloads")));
 app.use("/outputs", express.static(path.join(__dirname, "outputs")));
 // Serve converted files for download (YouTube, etc.)
 app.use("/download", express.static(path.join(__dirname, "converted")));
+
+// Serve client build (after API and file routes)
+const clientBuildPath = path.join(__dirname, "../client/build");
+app.use(express.static(clientBuildPath));
+
+// SPA fallback: send index.html for non-API routes
+app.get("*", (req, res) => {
+  if (req.path.startsWith("/api/")) {
+    return res.status(404).json({ error: "Not found" });
+  }
+  res.sendFile(path.join(clientBuildPath, "index.html"));
+});
 
 // Start server
 app.listen(PORT, () => {

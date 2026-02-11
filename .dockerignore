@@ -1,0 +1,25 @@
+# Exclude VCS and IDE files
+.git
+.gitignore
+.vscode
+.idea
+
+# Node
+node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Client build will be created inside Docker
+client/node_modules
+client/build
+
+# Server
+server/node_modules
+server/outputs
+server/uploads
+server/converted
+server/downloads
+
+# Misc
+.DS_Store
